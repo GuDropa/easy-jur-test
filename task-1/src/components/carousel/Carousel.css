@@ -1,0 +1,17 @@
+.carousel__inner img {
+    width: 400px;
+    height: 600px;
+}
+
+.carousel-indicators li {
+    background-color: #fff;
+}
+
+.carousel__control--next,
+.carousel__control--prev /*, .carousel-indicators */ {
+    filter: invert(100%);
+}
+
+.carousel__card {
+    min-height: 800px;
+}

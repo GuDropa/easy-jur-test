@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Presentation</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <a href="javascript:history.back()" class="control-previous-icon mb-3 d-flex align-items-center text-decoration-none text-dark" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                <span class="fw-bold">
+                    &nbsp; Back to Listing
+                </span>
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-md-4 d-flex justify-content-center justify-content-sm-center justify-content-md-start">
+                <img id="book-cover" class="img-fluid" alt="Book Cover">
+            </div>
+            <div class="col-md-8 mt-3 mt-sm-3 mt-md-0">
+                <h2 id="book-title"></h2>
+                <p id="book-description"></p>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Original Title:</strong> <span id="book-original-title"></span></li>
+                    <li class="list-group-item"><strong>Number:</strong> <span id="book-number"></span></li>
+                    <li class="list-group-item"><strong>Pages:</strong> <span id="book-pages"></span></li>
+                    <li class="list-group-item"><strong>Release Date:</strong> <span id="book-release-date"></span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    $(document).ready(async() => {
+
+        const apiBaseUrl = "https://potterapi-fedeperin.vercel.app"
+        
+        // Get book identifier from query string parameter 'identifier'
+        const params = new URL(document.location.toString()).searchParams;
+        const index = params.get("identifier");
+        
+        const res = await fetch(`${apiBaseUrl}/en/books?index=${index}`)
+        const book = await res.json()
+        
+        $('#book-cover').attr('src', book.cover);
+        $('#book-title').text(book.title);
+        $('#book-description').text(book.description);
+        $('#book-original-title').text(book.originalTitle);
+        $('#book-number').text(book.number);
+        $('#book-pages').text(book.pages);
+        $('#book-release-date').text(book.releaseDate);
+     })
+ </script>
+</html>
