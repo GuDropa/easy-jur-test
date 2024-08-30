@@ -1,7 +1,6 @@
-function initCarousel(selector, infoPath, items, options = {}) {
+function initCarousel(selector, infoPath, items) {
     const $target = $(selector);
     const $carouselInner = $('<div class="carousel-inner carousel__inner"></div>');
-    const $carouselIndicators = $('<ol class="carousel-indicators carousel__indicators"></ol>');
 
     items.forEach((item, index) => {
         const isActive = index === 0 ? 'active' : '';
@@ -20,9 +19,8 @@ function initCarousel(selector, infoPath, items, options = {}) {
         `);
     });
 
-    // ${$carouselIndicators.prop('outerHTML')}
     const carouselHtml = `
-        <div id="items-carousel" class="carousel slide" data-ride="carousel" data-bs-ride="carousel">
+        <div id="items-carousel" class="carousel slide" data-bs-ride="carousel">
             ${$carouselInner.prop('outerHTML')}
             <button class="carousel-control-prev carousel__control--prev" data-bs-target="#items-carousel" type="button" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

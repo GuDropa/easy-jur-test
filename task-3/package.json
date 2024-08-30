@@ -1,0 +1,16 @@
+{
+    "name": "isbn-validator",
+    "version": "1.0.0",
+    "description": "A project to validate ISBN-10 codes",
+    "main": "index.js",
+    "scripts": {
+      "test": "jasmine"
+    },
+    "dependencies": {},
+    "devDependencies": {
+      "jasmine": "^5.0.0"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+  }

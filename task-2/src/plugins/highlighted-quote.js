@@ -1,22 +1,31 @@
-// import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-// import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-// import Command from '@ckeditor/ckeditor5-core/src/command';
-import { Command, Plugin, ButtonView } from 'ckeditor5';
-
-// highlighted-quote-plugin.js
-// import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-// import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin, ButtonView } from 'ckeditor5';
 
 class InsertHighlightedQuoteCommand extends Plugin {
     execute() {
-        this.editor.model.change(writer => {
-            const quoteElement = writer.createElement('highlightedQuote');
+        const editor = this.editor;
+        const model = editor.model;
+        const selection = model.document.selection;
 
-            // Insert the element into the document
-            this.editor.model.insertContent(quoteElement);
+        model.change(writer => {
+            const ranges = selection.getRanges();
 
-            // Place the cursor inside the new element
-            writer.setSelection(quoteElement, 'in');
+            for (const range of ranges) {
+                const isFlat = range.start.parent === range.end.parent;
+
+                if (isFlat) {
+                    const quoteElement = writer.createElement('highlightedQuote');
+                    writer.wrap(range, quoteElement);
+                } else {
+                    // If the range is not flat, handle wrapping each block separately
+                    const flatRanges = Array.from(range.getItems())
+                        .map(item => writer.createRangeOn(item));
+
+                    for (const flatRange of flatRanges) {
+                        const quoteElement = writer.createElement('highlightedQuote');
+                        writer.wrap(flatRange, quoteElement);
+                    }
+                }
+            }
         });
     }
 
@@ -33,10 +42,8 @@ export default class HighlightedQuotePlugin extends Plugin {
     init() {
         const editor = this.editor;
 
-        // Register the command
         editor.commands.add('insertHighlightedQuote', new InsertHighlightedQuoteCommand(editor));
 
-        // Register the UI component
         editor.ui.componentFactory.add('highlightedQuote', locale => {
             const view = new ButtonView(locale);
 
@@ -46,7 +53,6 @@ export default class HighlightedQuotePlugin extends Plugin {
                 tooltip: true
             });
 
-            // Execute the command when the button is clicked
             view.on('execute', () => {
                 editor.execute('insertHighlightedQuote');
                 editor.editing.view.focus();
@@ -55,20 +61,21 @@ export default class HighlightedQuotePlugin extends Plugin {
             return view;
         });
 
-        // Define the schema for the new element
         editor.model.schema.register('highlightedQuote', {
             allowWhere: '$block',
             allowContentOf: '$block',
-            allowAttributes: [ 'class' ]
+            allowAttributes: ['class']
         });
 
-        // Define how the element will be rendered in the view
         editor.conversion.for('downcast').elementToElement({
             model: 'highlightedQuote',
-            view: (modelElement, { writer: viewWriter }) => {
+            view: (_, { writer: viewWriter }) => {
                 const quote = viewWriter.createContainerElement('blockquote', {
                     class: 'highlighted-quote'
                 });
+
+                const strong = viewWriter.createContainerElement('strong');
+                viewWriter.insert(viewWriter.createPositionAt(quote, 0), strong);
 
                 return quote;
             }
@@ -83,4 +90,3 @@ export default class HighlightedQuotePlugin extends Plugin {
         });
     }
 }
-

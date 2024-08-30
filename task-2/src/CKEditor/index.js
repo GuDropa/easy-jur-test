@@ -25,6 +25,8 @@ import {
 } from 'ckeditor5';
 import HighlightedQuote from '../plugins/highlighted-quote.js';
 
+// NOTE: Base do código criada no builder do CKEditor, dicponível em: https://ckeditor.com/ckeditor-5/builder/
+
 const editorConfig = {
     toolbar: {
         items: [
